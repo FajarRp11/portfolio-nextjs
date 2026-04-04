@@ -10,7 +10,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: "Formulir tidak valid!" };
+    return { error: z.treeifyError(validatedFields.error) };
   }
 
   const { email, password, name } = validatedFields.data;
