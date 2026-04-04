@@ -5,7 +5,7 @@ export const RegisterSchema = z
     name: z.string().min(1, {
       message: "Nama wajib diisi",
     }),
-    email: z.string().email({
+    email: z.email({
       message: "Format email tidak valid",
     }),
     password: z.string().min(6, {
