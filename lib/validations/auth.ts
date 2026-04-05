@@ -19,3 +19,12 @@ export const RegisterSchema = z
     message: "Kata sandi tidak cocok",
     path: ["confirmPassword"],
   });
+
+export const LoginSchema = z.object({
+  email: z.string().email({
+    message: "Format email tidak valid",
+  }),
+  password: z.string().min(1, {
+    message: "Password wajib diisi",
+  }),
+});
