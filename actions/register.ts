@@ -6,11 +6,12 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { RegisterSchema } from "@/lib/validations/auth";
 
-export const register = async (values: z.infer<typeof RegisterSchema>) => {
+export const register = async (prevState: any, formData: FormData) => {
+  const values = Object.fromEntries(formData.entries());
   const validatedFields = RegisterSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: z.treeifyError(validatedFields.error) };
+    return { error: "Formulir tidak valid!" };
   }
 
   const { email, password, name } = validatedFields.data;
