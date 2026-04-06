@@ -5,6 +5,7 @@ import { prisma } from "./lib/prisma"
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { LoginSchema } from "@/lib/validations/auth";
+import { Role } from "./lib/generated/prisma/enums";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -37,7 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.name = user.name;
-        // Optionally add role if needed: token.role = user.role;
+        token.role = user.role;
       }
       return token;
     },
@@ -45,8 +46,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.name = token.name as string | null | undefined;
+        session.user.role = token.role as Role;
       }
       return session;
+    },
+    authorized({auth, request: {nextUrl}}) {
+      const isLoggedIn = !!auth;
+      const protectedRoutes = ["/dashboard"];
+      const userRole = auth?.user.role;
+
+      if(!isLoggedIn && protectedRoutes.includes(nextUrl.pathname)) {
+        return Response.redirect(new URL("/login", nextUrl));
+      }
+
+      if(isLoggedIn && nextUrl.pathname.startsWith("/login")) {
+        return Response.redirect(new URL("/dashboard", nextUrl));
+      }
+      
+      if(isLoggedIn && nextUrl.pathname.startsWith("/dashboard") && userRole !== Role.ADMIN) {
+        return Response.redirect(new URL("/unauthorized", nextUrl));
+      }
+      return true;
     },
   },
 });
