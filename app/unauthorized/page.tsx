@@ -1,3 +1,5 @@
+import { logout } from "@/actions/logout";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const UnauthorizedPage = () => {
@@ -8,6 +10,11 @@ const UnauthorizedPage = () => {
       <Link href="/" className="text-blue-700 underline">
         Go back to home
       </Link>
+      <form action={logout} className="mt-6">
+        <Button type="submit" variant="destructive">
+          Keluar
+        </Button>
+      </form>
     </div>
   );
 };

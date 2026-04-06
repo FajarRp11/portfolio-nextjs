@@ -53,14 +53,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     authorized({auth, request: {nextUrl}}) {
       const isLoggedIn = !!auth;
       const userRole = auth?.user.role;
-      const adminRoutes = ["/dashboard", "/user-management"];
+      const adminRoutes = ["/admin/dashboard", "/admin/user-management"];
 
       if(!isLoggedIn && adminRoutes.includes(nextUrl.pathname)) {
         return Response.redirect(new URL("/login", nextUrl));
       }
 
       if(isLoggedIn && nextUrl.pathname.startsWith("/login")) {
-        return Response.redirect(new URL("/dashboard", nextUrl));
+        return Response.redirect(new URL("/admin/dashboard", nextUrl));
       }
       
       if(isLoggedIn && adminRoutes.includes(nextUrl.pathname) && userRole !== Role.ADMIN) {

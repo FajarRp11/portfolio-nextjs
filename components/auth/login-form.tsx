@@ -14,7 +14,6 @@ export const LoginForm = () => {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(login, undefined);
 
-
   useEffect(() => {
     if (state?.error) {
       toast.error(state.error);
@@ -22,7 +21,7 @@ export const LoginForm = () => {
 
     if (state?.success) {
       toast.success(state.success);
-      router.push("/dashboard");
+      router.push("/admin/dashboard");
     }
   }, [state, router]);
 
